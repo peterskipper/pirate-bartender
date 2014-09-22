@@ -17,14 +17,16 @@ ingredients = {
     "fruity": ["slice of orange", "dash of cassis", "cherry on top"]
 }
 
+pirate_adjs = ["Leeward", "Scurvy", "Starboard", "Salty", "Golden", "Iron", "Ill-Gotten", "Swashbucklin'", "Treacherous", "Fearsome", "Greedy", "Brutal", "Mutinous", "Stormy"]
+pirate_nouns = ["Cutlass", "Galleon", "Gangplank", "Spyglass", "Henry Morgan", "Rear Admiral", "Doubloon", "Crow's Nest",  "Shiver-Me-Timbers",  "Treasure Map", "First Mate"]
+
 def get_order():
     """Create and return a new dict with user's drink preferences"""
     #initialize prefs with logical defaults, all False
-    prefs = { "strong": False, "salty": False, "bitter": False, "sweet": False, "fruity": False}
+    prefs = {}
     for key in questions:
         resp = raw_input(questions[key])
-        if resp == 'y' or resp == 'yes':
-            prefs[key] = True
+        prefs[key] = resp.lower() in ['y', 'yes']
     return prefs
 
 def make_order(prefs):
@@ -35,12 +37,28 @@ def make_order(prefs):
             drink.append(random.choice(ingredients[key]))
     return drink
 
+def name_drink():
+    return random.choice(pirate_adjs) + ' ' + random.choice(pirate_nouns)
+
+def main():
+    print "Welcome to The Tattered Sail!\n"
+    while True:
+        print
+        preferences = get_order()
+        drink = make_order(preferences)
+        print "\n\nArrr! Have a " + name_drink() + "!"
+        print
+        print "It's got",
+        for ingredient in drink:
+            if ingredient == drink[-1]:
+                print "and a " + ingredient + "."
+            else:
+                print "a " + ingredient + ",",
+        stay = raw_input("\nWould ye like another beverage (y/n)? ")
+        if stay.lower() in ['n', 'no']:
+            break
+    print "Stay Jolly, Roger!  See ye again soon!"
+
+
 if __name__ == '__main__':
-    preferences = get_order()
-    drink = make_order(preferences)
-    print "Arrr! Here's a cocktail with",
-    for ingredient in drink:
-        if ingredient == drink[-1]:
-            print "and a " + ingredient + "."
-        else:
-            print "a " + ingredient + ",",
+    main()
