@@ -20,6 +20,15 @@ ingredients = {
 pirate_adjs = ["Leeward", "Scurvy", "Starboard", "Salty", "Golden", "Iron", "Ill-Gotten", "Swashbucklin'", "Treacherous", "Fearsome", "Greedy", "Brutal", "Mutinous", "Stormy"]
 pirate_nouns = ["Cutlass", "Galleon", "Gangplank", "Spyglass", "Henry Morgan", "Rear Admiral", "Doubloon", "Crow's Nest",  "Shiver-Me-Timbers",  "Treasure Map", "First Mate"]
 
+customers = {}
+
+stock = {}
+
+def fill_stock(stock):
+    stuff = [item for type in ingredients for item in ingredients[type]]
+    for item in stuff:
+        stock[item] = random.randint(2,7)
+
 def get_order():
     """Create and return a new dict with user's drink preferences"""
     #initialize prefs with logical defaults, all False
@@ -34,17 +43,36 @@ def make_order(prefs):
     drink = []
     for key in prefs:
         if prefs[key]:
-            drink.append(random.choice(ingredients[key]))
+            choice = random.choice(ingredients[key])
+            drink.append(choice)
+            stock[choice] -= 1
+            if stock[choice] == 0:
+                print "Headed to the back room for more " + choice
+                stock[choice] += 9 
     return drink
 
 def name_drink():
     return random.choice(pirate_adjs) + ' ' + random.choice(pirate_nouns)
 
+def customer():
+    name = raw_input("What's yer name, sailor? ").lower()
+    if name in customers:
+        usual = raw_input("Would ye like the usual (y/n)? ")
+        if usual.lower() in ['y', 'yes']:
+            return customers[name]
+        else:
+            prefs = get_order()
+            return prefs
+    else:
+        prefs = get_order()
+        customers[name] = prefs
+        return prefs
+
 def main():
     print "Welcome to The Tattered Sail!\n"
+    fill_stock(stock)
     while True:
-        print
-        preferences = get_order()
+        preferences = customer()
         drink = make_order(preferences)
         print "\n\nArrr! Have a " + name_drink() + "!"
         print
